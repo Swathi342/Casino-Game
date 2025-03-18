@@ -1,0 +1,98 @@
+import random
+
+class Casino:
+    def __init__(self):
+        self.balance = 0  # Initial balance
+
+    def current_balance(self):
+        return f"Your current balance is ${self.balance}\n"
+
+    def add_balance(self, bal):
+        self.balance += bal
+        return self.balance
+
+    def withdraw_balance(self, b):
+        self.balance -= b
+        return self.balance
+
+    def account_balance(self):
+        print("1. Add balance")
+        print("2. Withdraw balance\n")
+        n = int(input("Select an option: \n"))
+        if n == 1:
+            add_bal = int(input("Enter amount you want to add: "))
+            self.add_balance(add_bal)
+            print(self.current_balance())
+        elif n == 2:
+            if self.balance <=0:
+                print("you can't withdraw amount, you don't have enough balance")
+            else:
+                withdraw_bal = int(input("Enter amount you want to withdraw: "))
+                self.withdraw_balance(withdraw_bal)
+                print(self.current_balance())
+        else:
+            print("Please enter the correct option.")
+            self.account_balance()
+        print(self.current_balance())
+
+    def play_game(self):
+        guess_num = int(input("Range of numbers to guess: "))
+        computer_generated = random.randint(0, guess_num)
+        guess_dict = {}
+        guess_list = []
+        print("How many numbers you want to select? ")
+        n = int(input("Enter number: "))
+        for i in range(0, n):
+            print(f'guess the number from 0 to {guess_num}')
+            guessed_number = int(input("Guess the number: "))
+            betting_amount = int(input("Enter the betting amount: "))
+            if betting_amount <= self.balance:
+                self.balance -= betting_amount
+                print(self.current_balance())
+                guess_list.append(guessed_number)
+                guess_dict[guessed_number] = betting_amount
+            else:
+                print("Your current balance is not enough to bet.")
+                break  # again want to enter the betting amount
+        if computer_generated in guess_list:
+            print("Hurray! You guessed correctly, congratulations!")
+            print(f"The correct guessed number is {computer_generated} and betting amount is {guess_dict[computer_generated]}")
+            for x in guess_list:
+                if x == computer_generated:
+                    self.balance += (guess_dict[x] * 1000)
+        else:
+            print("\nOops! You lost, please try again.")
+        print(self.current_balance())
+
+    def options(self):
+        print("1. Account balance")
+        print("2. Play game")
+        print("3. Main menu\n")
+
+    def guess_the_number(self):
+        print("*********Welcome to Casino**********")
+        print(self.current_balance())
+        while True:
+            self.options()
+            num = int(input("Select an option: "))
+            if num == 1:
+                self.account_balance()
+            elif num == 2:
+                if self.balance > 0:
+                    self.play_game()
+                else:
+                    print("Sorry, you don't have enough balance. Go to account balance and add an amount.")
+            elif num == 3:
+                print("Thanks for participating.")
+                opt = input("Want to play again? yes/no: ")
+                if opt.lower() == "yes":
+                    self.guess_the_number()  # Recursion
+                elif opt.lower() == "no":
+                    print("Bye bye!")
+                    break
+            else:
+                print("Please select the correct option.")
+
+# Create an instance of Casino class and start the game
+casino = Casino()
+casino.guess_the_number()
